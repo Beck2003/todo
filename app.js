@@ -1,15 +1,19 @@
-//localStorage.clear();
+localStorage.clear();
 
 document.addEventListener('DOMContentLoaded', function () {
-  const listsContainer = document.getElementById('lists'); // Define the listsContainer
-  const currentListTodos = document.getElementById('current-list-todos'); // Define the currentListTodos
+    const listsContainer = document.getElementById('lists'); // Define the listsContainer
+    const currentListTodos = document.getElementById('current-list-todos'); // Define the currentListTodos
 
     // Initialize an empty array to store the lists
     let lists = [];
     let currentList = null; // Track the current list
+    let inputElementBeingEdited = false; // Initialize as false
 
     load();
-  
+
+    // Initialize a variable to store the dragged item
+    //let draggedItem = null;
+
     // Function to add a new list to the array
     function addList() {
       const listNameInput = document.getElementById('listName');
@@ -68,9 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
       // Add the todo to the current list's todos array
       currentList.todos.push(todo);
-  
       save();
-
       // Render the current list to update the todos
       render();
   
@@ -115,9 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (todo) {
         // Toggle the completed status
         todo.completed = !todo.completed;
-
         save();
-
         // Re-render the current list to update the display
         render();
       }
@@ -150,13 +150,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Set the current list's todos to only the uncompleted ones
       currentList.todos = uncompletedTodos;
-
       save();
-
       render(); // Re-render to update the display
     }
 
-  
     // Render function to display the current list and its todos
     function render() {
       let listsHtml = '<ul class="list-group">';
@@ -197,10 +194,11 @@ document.addEventListener('DOMContentLoaded', function () {
         let todosHtml = '<ul class="list-group-flush">';
         if (currentList) {
           currentList.todos.forEach((todo) => {
-              const todoId = `todo-${todo.id}`; // Unique ID for each todo item
-            todosHtml += `<li class="list-group-item border p-3" id="${todoId}">
+            const todoId = `todo-${todo.id}`; // Unique ID for each todo item
+            todosHtml += `<li class="list-group-item border p-3" id="${todoId}" draggable="true">
             <input type="checkbox" id="${'todo-' + todo.id}" ${todo.completed ? 'checked' : ''}>
-            ${todo.text}
+            <span class="todo-text">${todo.text}</span>
+            <span class="fa fas edit-todo-button" data-todo-id="${todo.id}">&#xf044;</span>
             <span class="fas fa fa-trash text-danger" data-todo-id="${todo.id}"></span>
             </li>`;
           });
@@ -223,8 +221,49 @@ document.addEventListener('DOMContentLoaded', function () {
           if (checkbox) {
             checkbox.checked = todo.completed; // Set the checkbox state
             checkbox.addEventListener('change', function () {
-              markCompletedTodo(todo.id);
+              if (!inputElementBeingEdited) { // Check if an input element is being edited
+                markCompletedTodo(todo.id);
+              }
+              //markCompletedTodo(todo.id);
             });
+          }
+        });
+
+
+        currentList.todos.forEach((todo) => {
+          const todoElement = document.getElementById(`todo-${todo.id}`);
+          if (todoElement) {
+            // Add an event listener for the edit button
+            const editButton = todoElement.querySelector('.edit-todo-button');
+            if (editButton) {
+              editButton.addEventListener('click', function () {
+                inputElementBeingEdited = true; // Set to true when editing starts
+                // Replace the text with an editable input field
+                const todoTextElement = todoElement.querySelector('.todo-text');
+                const currentText = todoTextElement.textContent;
+                const inputElement = document.createElement('input');
+                inputElement.className = "col-11";
+                inputElement.type = 'text';
+                inputElement.value = currentText;
+
+                inputElement.addEventListener('keydown', function (event) {
+                  if (event.keyCode === 13) {
+                    // Enter key pressed, save the updated text
+                    const updatedText = inputElement.value.trim();
+                    if (updatedText !== '') {
+                      todo.text = updatedText;
+                      save();
+                      render();
+                    }
+                    inputElementBeingEdited = false;
+                  }
+                });
+
+                // Replace the text element with the input field
+                todoTextElement.replaceWith(inputElement);
+                inputElement.focus(); // Set focus to the input field
+              });
+            }
           }
         });
       }
@@ -241,7 +280,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Add an event listener to the parent container for handling clicks on trash icons in the currentListTodos
-    //const currentListTodos = document.getElementById('current-list-todos');
     currentListTodos.addEventListener('click', function(event) {
         if (event.target.classList.contains('fa-trash')) {
             const todoId = event.target.getAttribute('data-todo-id');
@@ -260,7 +298,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   
     // Add an event listener to the parent <ul> element for handling clicks on trash icons
-    //const listsContainer = document.getElementById('lists');
     listsContainer.addEventListener('click', function(event) {
       if (event.target.classList.contains('fa-trash')) {
         const listId = event.target.getAttribute('data-list-id');
@@ -303,5 +340,51 @@ document.addEventListener('DOMContentLoaded', function () {
   if (currentList) {
     document.getElementById('current-list-name').innerText = currentList.name;
   }
+});
 
-  });
+
+          /*    // Add a dragstart event listener to each draggable todo item
+        currentListTodos.addEventListener('dragstart', function (event) {
+          console.log('start')
+          if (event.target.draggable) {
+            draggedItem = event.target;
+            // Set the data for the drag-and-drop operation
+            event.dataTransfer.setData('text/plain', event.target.id);
+          }
+        });
+
+        // Inside your render function, add the dragover and drop event listeners to currentListTodos
+        currentListTodos.addEventListener('dragover', function (event) {
+          console.log('drag ev fired')
+          event.preventDefault(); // Prevent the default behavior of not allowing drop
+        });
+
+        currentListTodos.addEventListener('drop', function (event) {
+          console.log('drop fired')
+          event.preventDefault();
+          if (draggedItem) {
+            // Get the dropped item's ID
+            const droppedItemId = event.dataTransfer.getData('text/plain');
+            const droppedItemElement = document.getElementById(droppedItemId);
+
+            if (droppedItemElement) {
+              // Reorder the todo items in the currentList.todos array
+              const todoId1 = droppedItemId.replace('todo-', '');
+              const todoId2 = draggedItem.id.replace('todo-', '');
+              const todoIndex1 = currentList.todos.findIndex((todo) => todo.id === todoId1);
+              const todoIndex2 = currentList.todos.findIndex((todo) => todo.id === todoId2);
+
+              if (todoIndex1 !== -1 && todoIndex2 !== -1) {
+                // Swap the todo items in the currentList.todos array
+                const temp = currentList.todos[todoIndex1];
+                currentList.todos[todoIndex1] = currentList.todos[todoIndex2];
+                currentList.todos[todoIndex2] = temp;
+
+                save();
+                render();
+              }
+            }
+
+            draggedItem = null;
+          }
+        });*/

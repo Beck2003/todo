@@ -1,12 +1,6 @@
 .row{
-    height: 90vh;
+    min-height: 90vh;
 }
-.user-input-item {
-    background-color: #60605f; /* Change this to the desired background color */
-    padding: 5px;
-    margin: 5px 0;
-    cursor: pointer; /* Add cursor style to indicate it's clickable */
-  }
 #listName{
     margin: 10px 0 0 0;
     padding: 10px;
@@ -17,7 +11,11 @@
 }
 ul {
     padding-left: 0;
+    margin: 0;
+    pad: 0;
 }
 li{
     margin: 10px 0;
+    user-select: none;
+    cursor: grab;
 } 

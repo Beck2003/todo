@@ -11,9 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     load();
 
-    // Initialize a variable to store the dragged item
-    //let draggedItem = null;
-
     // Function to add a new list to the array
     function addList() {
       const listNameInput = document.getElementById('listName');
@@ -74,8 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
       currentList.todos.push(todo);
       save();
       // Render the current list to update the todos
-      render();
-  
+      render();  
       // Clear the input field
       todoTextInput.value = '';
     }
@@ -94,9 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
             currentList.todos.splice(todoIndex, 1);
 
             save();
-
             render(); // Re-render to update the display
-
             // Remove the corresponding <li> element from the DOM
             const todoElement = document.getElementById(`todo-${todoId}`);
             if (todoElement) {
@@ -178,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       });
   
-      // Inside your event listener for handling clicks on list items
+      // Inside event listener for handling clicks on list items
       listsContainer.addEventListener('click', function(event) {
         if (event.target.classList.contains('list-group-item')) {
           const listId = event.target.getAttribute('data-list-id');
@@ -207,12 +201,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // print out the todos
         document.getElementById('current-list-todos').innerHTML = todosHtml;
 
-            // Add an event listener to the parent container for handling clicks on checkboxes in currentListTodos
+        // Add an event listener to the parent container for handling clicks on checkboxes in currentListTodos
         currentListTodos.addEventListener('change', function (event) {
-          if (event.target.type === 'checkbox') {
-            /*const todoId = event.target.getAttribute('data-todo-id');
-            markCompletedTodo(todoId);*/
-          }
+          if (event.target.type === 'checkbox') {}
         });
 
         // Inside your render function, add event listeners to the checkboxes
@@ -224,7 +215,6 @@ document.addEventListener('DOMContentLoaded', function () {
               if (!inputElementBeingEdited) { // Check if an input element is being edited
                 markCompletedTodo(todo.id);
               }
-              //markCompletedTodo(todo.id);
             });
           }
         });

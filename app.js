@@ -286,8 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
             removeTodo(todoId); // Call the removeTodo function
         }
     });
-  
-    // Rest of your code...
+
     document.getElementById("listName").addEventListener("keydown", handleKeyPress);
   
     function handleKeyPress(event) {
@@ -341,50 +340,3 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('current-list-name').innerText = currentList.name;
   }
 });
-
-
-          /*    // Add a dragstart event listener to each draggable todo item
-        currentListTodos.addEventListener('dragstart', function (event) {
-          console.log('start')
-          if (event.target.draggable) {
-            draggedItem = event.target;
-            // Set the data for the drag-and-drop operation
-            event.dataTransfer.setData('text/plain', event.target.id);
-          }
-        });
-
-        // Inside your render function, add the dragover and drop event listeners to currentListTodos
-        currentListTodos.addEventListener('dragover', function (event) {
-          console.log('drag ev fired')
-          event.preventDefault(); // Prevent the default behavior of not allowing drop
-        });
-
-        currentListTodos.addEventListener('drop', function (event) {
-          console.log('drop fired')
-          event.preventDefault();
-          if (draggedItem) {
-            // Get the dropped item's ID
-            const droppedItemId = event.dataTransfer.getData('text/plain');
-            const droppedItemElement = document.getElementById(droppedItemId);
-
-            if (droppedItemElement) {
-              // Reorder the todo items in the currentList.todos array
-              const todoId1 = droppedItemId.replace('todo-', '');
-              const todoId2 = draggedItem.id.replace('todo-', '');
-              const todoIndex1 = currentList.todos.findIndex((todo) => todo.id === todoId1);
-              const todoIndex2 = currentList.todos.findIndex((todo) => todo.id === todoId2);
-
-              if (todoIndex1 !== -1 && todoIndex2 !== -1) {
-                // Swap the todo items in the currentList.todos array
-                const temp = currentList.todos[todoIndex1];
-                currentList.todos[todoIndex1] = currentList.todos[todoIndex2];
-                currentList.todos[todoIndex2] = temp;
-
-                save();
-                render();
-              }
-            }
-
-            draggedItem = null;
-          }
-        });*/

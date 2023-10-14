@@ -1,4 +1,4 @@
-localStorage.clear();
+//localStorage.clear();
 
 document.addEventListener('DOMContentLoaded', function () {
     const listsContainer = document.getElementById('lists'); // Define the listsContainer

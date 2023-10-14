@@ -1,1 +1,2 @@
 # todo
+How to use the app. In the input box on the left, type your list name and press the enter key. To select a list click on the list that you want to add todo tasks to. To create todo items. Type in the input box in the right and press enter key and it will be displayed. Deleting lists and todos are simple just press the trash icon next to whatever you want to delete and it will be deleted. To edit todo same thing, click on edit icon next to that todo. checkboxes are there to show whats been completed or not.
